@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('coins')->default(0);
             $table->enum('chat_channel', ['all', 'party', 'guild', 'staff'])->default('all');
             $table->unsignedBigInteger('selected_language')->nullable();
-            $table->boolean('clear_inventory')->default(true);
             $table->timestamp('last_login_at')->nullable();
             $table->timestamp('last_logout_at')->nullable();
             $table->timestamps();

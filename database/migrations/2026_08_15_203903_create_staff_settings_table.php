@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ranks', function (Blueprint $table) {
+        Schema::create('staff_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('display_name', 100);
-            $table->string('name_color', 50);
-            $table->integer('priority')->default(0);
+            $table->string('setting')->unique();
+            $table->integer('min_priority')->default(0);
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ranks');
+        Schema::dropIfExists('staff_settings');
     }
 };

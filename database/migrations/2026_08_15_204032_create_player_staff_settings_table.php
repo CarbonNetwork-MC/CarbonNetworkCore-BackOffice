@@ -14,15 +14,12 @@ return new class extends Migration
         Schema::create('player_staff_settings', function (Blueprint $table) {
             $table->id();
             $table->char('player_uuid', 36);
-            // $table->json('settings');
-            $table->boolean('all_connections')->default(true);
-            $table->boolean('staff_connections')->default(true);
-            $table->boolean('all_server_switches')->default(true);
-            $table->boolean('staff_server_switches')->default(true);
+            $table->unsignedBigInteger('setting_id');
+            $table->boolean('enabled')->default(false);
             $table->timestamps();
 
-            // Foreign keys
-            $table->foreign('player_uuid')->references('uuid')->on('players')->onDelete('cascade');
+            $table->foreign('player_uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('setting_id')->references('id')->on('staff_settings')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
