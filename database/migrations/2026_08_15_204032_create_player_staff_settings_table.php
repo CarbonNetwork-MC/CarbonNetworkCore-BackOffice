@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->char('player_uuid', 36);
             $table->unsignedBigInteger('setting_id');
-            $table->boolean('enabled')->default(false);
+            $table->string('value', 255);
             $table->timestamps();
 
             $table->foreign('player_uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');

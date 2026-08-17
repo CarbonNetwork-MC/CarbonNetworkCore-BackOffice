@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('setting')->unique();
             $table->integer('min_priority')->default(0);
+            $table->enum('type', ['boolean', 'string', 'integer', 'float'])->default('string');
+            $table->string('default_value')->nullable();
             $table->timestamps();
         });
     }
