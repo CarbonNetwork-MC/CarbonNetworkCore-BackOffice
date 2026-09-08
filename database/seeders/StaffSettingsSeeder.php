@@ -17,22 +17,32 @@ class StaffSettingsSeeder extends Seeder
             [
                 'setting' => 'all_connections',
                 'min_priority' => 90,
+                'type' => 'boolean',
+                'default' => 'false'
             ],
             [
                 'setting' => 'staff_connections',
                 'min_priority' => 50,
+                'type' => 'boolean',
+                'default' => 'false'
             ],
             [
                 'setting' => 'all_server_switches',
                 'min_priority' => 90,
+                'type' => 'boolean',
+                'default' => 'false'
             ],
             [
                 'setting' => 'staff_server_switches',
                 'min_priority' => 50,
+                'type' => 'boolean',
+                'default' => 'false'
             ],
             [
-                'setting' => 'keep_inventory_on_join',
+                'setting' => 'unlock_inventory',
                 'min_priority' => 50,
+                'type' => 'boolean',
+                'default' => 'false'
             ]
         ];
 
