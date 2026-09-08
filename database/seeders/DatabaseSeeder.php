@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             StaffSettingsSeeder::class,
             RankSeeder::class,
+            LanguagesSeeder::class,
         ]);
     }
 }
