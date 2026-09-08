@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('player_prefixes', function (Blueprint $table) {
+        Schema::create('languages', function (Blueprint $table) {
             $table->id();
-            $table->char('player_uuid', 36)->unique();
-            $table->string('prefix');
-            $table->boolean('selected')->default(false);
+            $table->string('name', 50);
+            $table->string('shortcode', 2);
+            $table->string('code', 5);
             $table->timestamps();
-
-            $table->foreign('player_uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('player_prefixes');
+        Schema::dropIfExists('languages');
     }
 };

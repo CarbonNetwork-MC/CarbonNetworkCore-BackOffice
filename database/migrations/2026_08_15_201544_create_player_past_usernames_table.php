@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chat_colors', function (Blueprint $table) {
+        Schema::create('player_past_usernames', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 64);
-            $table->string('open_tag', 32);
-            $table->string('close_tag', 32);
-            $table->boolean('is_bold')->default(false);
-            $table->char('hex', 7)->nullable();
+            $table->char('player_uuid', 36);
+            $table->string('username', 16);
             $table->timestamps();
+
+            $table->foreign('uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chat_colors');
+        Schema::dropIfExists('player_past_usernames');
     }
 };
