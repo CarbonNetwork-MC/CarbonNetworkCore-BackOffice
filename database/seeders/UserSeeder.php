@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -23,13 +22,14 @@ class UserSeeder extends Seeder
     {
         if (app()->environment('production')) {
             $this->command->error('UserSeeder should not be run in production environment.');
+
             return;
         }
 
         foreach (self::USERS as $userData) {
             $user = User::query()->updateOrCreate(
                 [
-                    'email' => $userData['email']
+                    'email' => $userData['email'],
                 ],
                 [
                     'uuid' => \Str::uuid(),
@@ -38,7 +38,10 @@ class UserSeeder extends Seeder
                 ]
             );
 
-            $token = $user->createToken('minecraft-server', ['player-location:read'])->plainTextToken;
+            $token = $user->createToken(
+                'minecraft-server',
+                ['player-location:read', 'player-location:write'],
+            )->plainTextToken;
 
             $this->command->info("User '{$user->name}' created with token '{$token}'.");
         }

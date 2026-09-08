@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PlayerLocation;
 use Illuminate\Http\Request;
 
 class PlayerLocationController extends Controller
@@ -19,7 +20,38 @@ class PlayerLocationController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json(['message' => 'Not supported'], 405);
+        $validated = $request->validate([
+            'player_uuid' => ['required', 'uuid', 'exists:players,uuid'],
+            'gamemode' => ['required', 'string', 'max:64', 'regex:/^[a-z0-9][a-z0-9_-]*$/'],
+            'server_name' => ['required', 'string', 'max:255'],
+            'world' => ['required', 'string', 'max:255'],
+            'x' => ['required', 'numeric'],
+            'y' => ['required', 'numeric'],
+            'z' => ['required', 'numeric'],
+            'yaw' => ['required', 'numeric'],
+            'pitch' => ['required', 'numeric', 'between:-90,90'],
+        ]);
+
+        $playerLocation = PlayerLocation::query()->updateOrCreate(
+            [
+                'player_uuid' => $validated['player_uuid'],
+                'gamemode' => $validated['gamemode'],
+            ],
+            [
+                'server_name' => $validated['server_name'],
+                'world' => $validated['world'],
+                'x' => $validated['x'],
+                'y' => $validated['y'],
+                'z' => $validated['z'],
+                'yaw' => $validated['yaw'],
+                'pitch' => $validated['pitch'],
+            ],
+        );
+
+        return response()->json(
+            ['message' => 'Player location saved'],
+            $playerLocation->wasRecentlyCreated ? 201 : 200,
+        );
     }
 
     /**
@@ -27,10 +59,11 @@ class PlayerLocationController extends Controller
      */
     public function show(string $gamemode, string $uuid)
     {
-        $playerLocation = \App\Models\PlayerLocation::where('player_uuid', $uuid)->where('gamemode', $gamemode)->first(['server_name']);
+        $playerLocation = PlayerLocation::where('player_uuid', $uuid)->where('gamemode', $gamemode)->first(['server_name']);
 
-        if (!$playerLocation)
+        if (! $playerLocation) {
             return response()->json(['message' => 'Player location not found'], 404);
+        }
 
         return response()->json($playerLocation);
     }

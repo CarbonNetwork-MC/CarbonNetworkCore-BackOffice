@@ -5,6 +5,115 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+function createPlayerForLocationTest(): string
+{
+    $uuid = (string) Str::uuid();
+    $rankId = DB::table('ranks')->insertGetId([
+        'name' => 'default',
+        'display_name' => 'Default',
+        'name_color' => '#ffffff',
+        'priority' => 0,
+    ]);
+
+    DB::table('players')->insert([
+        'uuid' => $uuid,
+        'username' => 'TestPlayer',
+        'rank_id' => $rankId,
+    ]);
+
+    return $uuid;
+}
+
+function playerLocationPayload(string $uuid, array $overrides = []): array
+{
+    return array_merge([
+        'player_uuid' => $uuid,
+        'gamemode' => 'cities',
+        'server_name' => 'cities-1',
+        'world' => 'world',
+        'x' => 1.5,
+        'y' => 64,
+        'z' => -2.5,
+        'yaw' => 90,
+        'pitch' => 10,
+    ], $overrides);
+}
+
+it('rejects unauthenticated player location writes', function () {
+    $this->postJson('/api/player-location', playerLocationPayload((string) Str::uuid()))
+        ->assertUnauthorized();
+});
+
+it('rejects tokens without the player location write ability', function () {
+    $user = User::factory()->create(['uuid' => Str::uuid()]);
+    $token = $user->createToken('test-server', ['player-location:read'])->plainTextToken;
+
+    $this->withToken($token)
+        ->postJson('/api/player-location', playerLocationPayload((string) Str::uuid()))
+        ->assertForbidden();
+});
+
+it('creates and updates a player location', function () {
+    $uuid = createPlayerForLocationTest();
+    $user = User::factory()->create(['uuid' => Str::uuid()]);
+    $token = $user->createToken('test-server', ['player-location:write'])->plainTextToken;
+
+    $this->withToken($token)
+        ->postJson('/api/player-location', playerLocationPayload($uuid))
+        ->assertCreated()
+        ->assertExactJson(['message' => 'Player location saved']);
+
+    $this->assertDatabaseHas('player_locations', [
+        'player_uuid' => $uuid,
+        'gamemode' => 'cities',
+        'server_name' => 'cities-1',
+    ]);
+
+    $this->withToken($token)
+        ->postJson('/api/player-location', playerLocationPayload($uuid, [
+            'server_name' => 'cities-2',
+            'world' => 'city_world',
+        ]))
+        ->assertOk()
+        ->assertExactJson(['message' => 'Player location saved']);
+
+    expect(PlayerLocation::query()
+        ->where('player_uuid', $uuid)
+        ->where('gamemode', 'cities')
+        ->count())->toBe(1);
+
+    $this->assertDatabaseHas('player_locations', [
+        'player_uuid' => $uuid,
+        'gamemode' => 'cities',
+        'server_name' => 'cities-2',
+        'world' => 'city_world',
+    ]);
+});
+
+it('validates player location writes', function () {
+    $user = User::factory()->create(['uuid' => Str::uuid()]);
+    $token = $user->createToken('test-server', ['player-location:write'])->plainTextToken;
+
+    $this->withToken($token)
+        ->postJson('/api/player-location', [
+            'player_uuid' => 'invalid',
+            'gamemode' => 'Invalid Gamemode',
+            'pitch' => 91,
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors([
+            'player_uuid',
+            'gamemode',
+            'server_name',
+            'world',
+            'x',
+            'y',
+            'z',
+            'yaw',
+            'pitch',
+        ]);
+});
+
 it('rejects unauthenticated player location requests', function () {
     $this->getJson('/api/player-location/cities/'.Str::uuid())
         ->assertUnauthorized();
