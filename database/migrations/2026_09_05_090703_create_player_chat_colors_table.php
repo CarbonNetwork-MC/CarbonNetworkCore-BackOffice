@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('player_staff_settings', function (Blueprint $table) {
+        Schema::create('player_chat_colors', function (Blueprint $table) {
             $table->id();
-            $table->char('player_uuid', 36);
-            $table->unsignedBigInteger('setting_id');
-            $table->string('value', 255);
+            $table->char('player_uuid', 36)->unique();
+            $table->unsignedBigInteger('color_id');
+            $table->enum('type', ['chat', 'prefix', 'level', 'name']);
+            $table->boolean('selected')->default(false);
             $table->timestamps();
 
             $table->foreign('player_uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('setting_id')->references('id')->on('staff_settings')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('color_id')->references('id')->on('chat_colors')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('player_staff_settings');
+        Schema::dropIfExists('player_chat_colors');
     }
 };

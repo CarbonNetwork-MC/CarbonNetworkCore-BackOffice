@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('staff_settings', function (Blueprint $table) {
+        Schema::create('player_past_usernames', function (Blueprint $table) {
             $table->id();
-            $table->string('setting')->unique();
-            $table->integer('min_priority')->default(0);
-            $table->enum('type', ['boolean', 'string', 'integer', 'float'])->default('string');
-            $table->string('default_value')->nullable();
+            $table->uuid('player_uuid');
+            $table->string('past_username', 16);
             $table->timestamps();
+
+            $table->foreign('player_uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('staff_settings');
+        Schema::dropIfExists('player_past_usernames');
     }
 };

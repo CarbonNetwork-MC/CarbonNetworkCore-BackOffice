@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('player_settings', function (Blueprint $table) {
+        Schema::create('languages', function (Blueprint $table) {
             $table->id();
-            $table->char('player_uuid', 36)->unique();
-            $table->boolean('see_other_players')->default(true);
+            $table->string('name');
+            $table->string('iso', 2);
+            $table->string('locale', 5);
+            $table->integer('headdb_id')->nullable();
             $table->timestamps();
-
-            // Foreign keys
-            $table->foreign('player_uuid')->references('uuid')->on('players')->onDelete('cascade');
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('player_settings');
+        Schema::dropIfExists('languages');
     }
 };

@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('languages', function (Blueprint $table) {
-            $table->string('headdb_id')->nullable()->after('code');
+        Schema::create('countries', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('iso', 2);
+            $table->string('flag_code', 10);
+            $table->integer('headdb_id')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('languages', function (Blueprint $table) {
-            $table->dropColumn('headdb_id');
-        });
+        Schema::dropIfExists('countries');
     }
 };

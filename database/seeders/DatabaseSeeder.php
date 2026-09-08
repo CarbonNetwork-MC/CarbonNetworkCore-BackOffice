@@ -2,20 +2,19 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
-     * Run the database seeds.
+     * Seed the application's database.
      */
     public function run(): void
     {
-        $this->call([
-            StaffSettingsSeeder::class,
-            RankSeeder::class,
-            LanguagesSeeder::class,
-        ]);
+        
     }
 }
