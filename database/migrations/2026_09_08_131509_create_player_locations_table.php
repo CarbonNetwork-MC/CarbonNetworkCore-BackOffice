@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('player_locations', function (Blueprint $table) {
-            $table->char('player_uuid', 36)->primary();
+            $table->char('player_uuid', 36);
             $table->string('gamemode');
             $table->string('server_name');
             $table->string('world');
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->float('pitch');
             $table->timestamps();
 
+            $table->primary(['player_uuid', 'gamemode']);
             $table->foreign('player_uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');
         });
     }
