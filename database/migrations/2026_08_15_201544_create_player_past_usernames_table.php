@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('username', 16);
             $table->timestamps();
 
-            $table->foreign('uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('player_uuid')->references('uuid')->on('players')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
