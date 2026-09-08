@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('player_locations', function (Blueprint $table) {
             $table->char('player_uuid', 36)->primary();
+            $table->string('gamemode');
             $table->string('server_name');
             $table->string('world');
             $table->float('x');

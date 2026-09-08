@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 )]
 #[Fillable([
     'player_uuid',
+    'gamemode',
     'server_name',
     'world',
     'x',

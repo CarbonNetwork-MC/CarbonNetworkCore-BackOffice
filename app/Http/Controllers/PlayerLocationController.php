@@ -25,9 +25,9 @@ class PlayerLocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $uuid)
+    public function show(string $gamemode, string $uuid)
     {
-        $playerLocation = \App\Models\PlayerLocation::where('player_uuid', $uuid)->first(['server_name']);
+        $playerLocation = \App\Models\PlayerLocation::where('player_uuid', $uuid)->where('gamemode', $gamemode)->first(['server_name']);
 
         if (!$playerLocation)
             return response()->json(['message' => 'Player location not found'], 404);
