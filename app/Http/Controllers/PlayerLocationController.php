@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlayerLocation;
 use Illuminate\Http\Request;
+use Log;
 
 class PlayerLocationController extends Controller
 {
@@ -48,6 +49,8 @@ class PlayerLocationController extends Controller
             ],
         );
 
+        Log::info('Player location saved', ['player_uuid' => $validated['player_uuid'], 'gamemode' => $validated['gamemode']]);
+
         return response()->json(
             ['message' => 'Player location saved'],
             $playerLocation->wasRecentlyCreated ? 201 : 200,
@@ -64,6 +67,8 @@ class PlayerLocationController extends Controller
         if (! $playerLocation) {
             return response()->json(['message' => 'Player location not found'], 404);
         }
+
+        Log::info('Player location retrieved', ['player_uuid' => $uuid, 'gamemode' => $gamemode]);
 
         return response()->json($playerLocation);
     }
