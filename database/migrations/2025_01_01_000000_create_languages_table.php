@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('languages', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
-            $table->string('shortcode', 2);
-            $table->string('code', 5);
+            $table->string('name');
+            $table->string('iso', 2);
+            $table->string('locale', 5);
+            $table->integer('headdb_id')->nullable();
             $table->timestamps();
         });
     }
