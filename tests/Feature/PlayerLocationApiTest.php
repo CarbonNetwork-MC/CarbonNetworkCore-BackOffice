@@ -114,6 +114,18 @@ it('validates player location writes', function () {
         ]);
 });
 
+it('rejects a location write before the authoritative player exists', function () {
+    $user = User::factory()->create(['uuid' => Str::uuid()]);
+    $token = $user->createToken('test-server', ['player-location:write'])->plainTextToken;
+
+    $this->withToken($token)
+        ->postJson('/api/player-location', playerLocationPayload((string) Str::uuid()))
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['player_uuid']);
+
+    expect(PlayerLocation::query()->count())->toBe(0);
+});
+
 it('rejects unauthenticated player location requests', function () {
     $this->getJson('/api/player-location/cities/'.Str::uuid())
         ->assertUnauthorized();
